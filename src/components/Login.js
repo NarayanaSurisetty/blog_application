@@ -18,7 +18,7 @@ const Login = () => {
         e.preventDefault();
         setError("");
         if (email.trim() === '' || password.trim() === '') {
-            setError("Please fill out email & password!");            
+            setError("Please fill out email & password!");
         } else {
             ref.current.staticStart();
             try {
@@ -34,9 +34,9 @@ const Login = () => {
 
     return (
         <>
-            <div className="p-4 mt-5 box">
-                <h2 className="mb-3 text-warning">Login</h2>
-                <LoadingBar color="#08518b" height={2.5} ref={ref}/>
+            <div className="p-4 mt-5 box centerForms">
+                <h2 className="mb-3 text-primary">Login</h2>
+                <LoadingBar color="#08518b" height={2.5} ref={ref} />
 
                 {error && <Alert variant="danger">{error}</Alert>}
 
@@ -66,9 +66,9 @@ const Login = () => {
                         </Button>
                     </div>
                 </Form>
-            </div>
-            <div className="box text-center">
-                Don't have an account? <Link to="/signup">Sign up</Link>
+                <div className="mt-3 box text-center">
+                    Don't have an account? <Link to="/signup">Sign up</Link>
+                </div>
             </div>
         </>
     );

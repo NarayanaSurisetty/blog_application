@@ -22,7 +22,7 @@ const Signup = () => {
         } else {
             ref.current.staticStart();
             try {
-                await signUp(email, password, name);                        
+                await signUp(email, password, name);
                 navigate("/");
                 ref.current.complete();
             } catch (err) {
@@ -34,9 +34,9 @@ const Signup = () => {
 
     return (
         <>
-            <div className="p-4 mt-5 box">
-                <h2 className="mb-3 text-warning">Signup</h2>
-                <LoadingBar color="#08518b" height={2.5} ref={ref} />
+            <div className="p-4 mt-5 box centerForms">
+                <h2 className="mb-3 text-primary">Signup</h2>
+                <LoadingBar color="#0d6efd" height={2.5} ref={ref} />
 
                 {error && <Alert variant="danger">{error}</Alert>}
 
@@ -75,9 +75,10 @@ const Signup = () => {
                         </Button>
                     </div>
                 </Form>
-            </div>
-            <div className=" box text-center">
-                Already have an account? <Link to="/">Log In</Link>
+
+                <div className="mt-3 box text-center">
+                    Already have an account? <Link to="/">Log In</Link>
+                </div>
             </div>
         </>
     );
