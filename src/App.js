@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { UserAuthContextProvider } from "./context/userAuthContext";
+import ForgotPassword from './components/forgotPassword';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         />
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </UserAuthContextProvider>
   );

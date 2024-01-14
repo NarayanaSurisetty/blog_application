@@ -6,7 +6,6 @@ import { useUserAuth } from "../context/userAuthContext";
 import LoadingBar from 'react-top-loading-bar';
 
 const Login = () => {
-    const [btnDisable, setBtnDisable] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -51,7 +50,7 @@ const Login = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Group className="mb-2" controlId="formBasicPassword">
                         <Form.Control
                             type="password"
                             placeholder="Password"
@@ -59,6 +58,9 @@ const Login = () => {
                             autoComplete="off"
                         />
                     </Form.Group>
+                    <div className='mb-2 text-end'>
+                        <Link to='/forgot-password' className="fs-6">Forgot Password ?</Link>
+                    </div>
 
                     <div className="d-grid gap-2">
                         <Button variant="primary" type="Submit">
