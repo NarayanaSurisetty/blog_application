@@ -1,17 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Alert } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { useUserAuth } from "../context/userAuthContext";
 import LoadingBar from 'react-top-loading-bar';
+import { auth } from "../firebase";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { logIn } = useUserAuth();
+    const { logIn, user } = useUserAuth();
     const navigate = useNavigate();
     const ref = useRef(null);
+
+    useEffect(() => {
+        if(auth.currentUser){
+            navigate("/Home");
+        }
+    }, [auth.currentUser])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
