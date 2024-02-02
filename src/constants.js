@@ -1,6 +1,6 @@
 export const myConstants = {
 
     // (LOCAL) url
-    baseUrl: "https://localhost:44343/",
+    baseUrl: "https://localhost:44321/",
 
 }

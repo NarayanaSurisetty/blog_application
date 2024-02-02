@@ -10,7 +10,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { logIn, user } = useUserAuth();
+    const { logIn } = useUserAuth();
     const navigate = useNavigate();
     const ref = useRef(null);
 

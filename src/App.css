@@ -9,6 +9,11 @@
   border-radius: 5px;
 }
 
+.btn-center {
+  display: flex;
+  align-items: center;
+}
+
 .name-textColor {
   color: white;
 }

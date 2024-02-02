@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Navbar, Nav, Container, Modal, Form } from "react-bootstrap";
+import { Button, Navbar, Nav, Container, Modal, Form, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useUserAuth } from "../context/userAuthContext";
 import LoadingBar from 'react-top-loading-bar';
 import Posts from "./Posts";
 import "bootstrap-icons/font/bootstrap-icons.css";
-// import NewPostForm from './NewPostForm';
-import { connect, useDispatch } from "react-redux";
-// import { createNewPost } from '../redux/actions/newPostAction';
+import { useDispatch } from "react-redux";
+import { createNewPost } from '../redux/actions/newPostAction';
+import { getAllBlogPosts } from "../redux/actions/getAllBlogPosts"
 import { auth } from "../firebase";
+import "../App"
 
 const Home = () => {
     const { logOut, user } = useUserAuth();
@@ -20,8 +21,23 @@ const Home = () => {
     const ref = useRef(null);
     const dispatch = useDispatch();
     const [validated, setValidated] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [getAllPosts, setGetAllPosts] = useState([]);
+
+    const getAllPostsDataMethod = () => {        
+        ref.current.staticStart();
+        dispatch(getAllBlogPosts()).then((res) => {
+            ref.current.complete();
+            if (res.type === "success") {
+                setGetAllPosts(res.data);
+            } else {
+                setGetAllPosts([]);
+            }
+        });
+    }
 
     useEffect(() => {
+        getAllPostsDataMethod();
     }, [])
 
     const handleShow = () => setShow(true);
@@ -41,37 +57,34 @@ const Home = () => {
         setPostTitle(e.target.value);
     }
 
-    const createNewPost = async (event) => {
-        // let form = event.currentTarget;
-        // if (form.checkValidity() === false) {
-        //     event.preventDefault();
-        //     event.stopPropagation();
-        // }
-        // ref.current.staticStart();
-        // setValidated(true);
-        // if (postTitle.trim() != "" && postContent.trim() != "") {
-        //     await auth.currentUser.reload().then(() => {
-        //         // console.log(auth.currentUser);
-        //         let data = {
-        //             UserUID: auth.currentUser.uid,
-        //             Name: auth.currentUser.displayName,
-        //             Title: postTitle,
-        //             Description: postContent
-        //         }
-        //         dispatch(createNewPost(data)).then(async (res) => {
-        //             console.log(res);
-        //             ref.current.complete();
-        //             if (res.type == 'success') {
-        //                 setValidated(false);
-                      setNewPostModal(false);
-        //             } else {
-        //                 console.log(res);
-        //             }
-        //         });
-        //     })
-        // } else {
-        //     ref.current.complete();
-        // }
+    const createNewPostData = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setValidated(true);
+        if (postTitle.trim() !== "" && postContent.trim() !== "") {
+            await auth.currentUser.reload().then(() => {
+                let data = {
+                    UserUID: auth.currentUser.uid,
+                    Name: auth.currentUser.displayName,
+                    Title: postTitle,
+                    Description: postContent
+                }
+                dispatch(createNewPost(data)).then((res) => {
+                    setLoading(false);
+                    if (res.type === "success") {
+                        setValidated(false);
+                        setNewPostModal(false);
+                        setPostTitle("");
+                        setPostContent("");
+                        getAllPostsDataMethod();
+                    } else {
+                        setLoading(false);
+                    }
+                });
+            })
+        } else {
+            setLoading(false);
+        }
     }
 
     const Logout = async () => {
@@ -144,9 +157,16 @@ const Home = () => {
                                             <Form.Control as="textarea" rows={8} onChange={onChangePostContent} required />
                                         </Form.Group>
                                     </Form>
-                                    <Button type="submit" onClick={createNewPost}>
-                                        Create New Post
-                                    </Button>
+                                    <div className="btn-center">
+                                        {loading && (
+                                            <Spinner animation="border" role="status" variant="primary">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </Spinner>
+                                        )}
+                                        <Button type="submit" onClick={createNewPostData} disabled={loading}>
+                                            Create New Post
+                                        </Button>
+                                    </div>
                                 </Modal.Body>
                             </Modal>
                             {/* ------------ Create Post Modal End ---------  */}
@@ -154,7 +174,7 @@ const Home = () => {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Posts />
+            <Posts getAllPostsData = {getAllPosts}/>
         </>
     );
 };

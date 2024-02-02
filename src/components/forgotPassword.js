@@ -5,14 +5,16 @@ import { auth } from "../firebase";
 import LoadingBar from 'react-top-loading-bar';
 import { Form, Alert } from "react-bootstrap";
 import { Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, 
+    // useNavigate
+ } from "react-router-dom";
 
 function ForgotPassword() {
     const [email, setEmail] = useState(null);
     const [emailMessage, setEmailMessage] = useState(false);
     const [error, setError] = useState(null);
     const ref = useRef(null);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         setError("");
