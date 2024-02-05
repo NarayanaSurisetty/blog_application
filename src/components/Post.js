@@ -15,13 +15,13 @@ const Post = ({ post: { title, description, name, id } }) => {
             <div className="post-container">
                 <h3 className="heading">{title}</h3>
                 <p>{description}</p>
-                <div className="info">
+                <div className="info mt-2">
                     <h6>Written by: {name}</h6>
                 </div>
-                <div variant="light" className="text-end comments-cursor" onClick={handleShow}>
+                <div variant="light" className="comments-cursor" onClick={handleShow}>
                     <i className="bi bi-chat-dots"></i> Comments
                 </div>
-                {show && <Comments show={show} modalClose={handleClose} id={id} title={title}/>}
+                {show && <Comments show={show} modalClose={handleClose} id={id} title={title} />}
             </div>
         </>
     );
