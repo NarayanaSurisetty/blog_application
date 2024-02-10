@@ -4,6 +4,7 @@
 	flex-direction: column;
 	padding: 3%;
 	width: 100%;
+    border: 2px solid #001cff;
 }
 
 .heading {
@@ -13,3 +14,10 @@
 .comments-cursor {
 	cursor: pointer;
 }
+.css-9emuhu-MuiPaper-root-MuiDrawer-paper {
+	height: 25% !important;
+}
+.hr-opacity {
+	margin: 0.5px;
+}
+
