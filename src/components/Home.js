@@ -7,9 +7,10 @@ import Posts from "./Posts";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useDispatch } from "react-redux";
 import { createNewPost } from '../redux/actions/newPostAction';
-import { getAllBlogPosts } from "../redux/actions/getAllBlogPosts"
+import { getAllBlogPosts } from "../redux/actions/getAllBlogPosts";
 import { auth } from "../firebase";
 import "../App"
+import NewPost from "./NewPost";
 
 const Home = () => {
     const { logOut, user } = useUserAuth();
@@ -24,7 +25,7 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const [getAllPosts, setGetAllPosts] = useState([]);
 
-    const getAllPostsDataMethod = () => {        
+    const getAllPostsDataMethod = () => {
         ref.current.staticStart();
         dispatch(getAllBlogPosts()).then((res) => {
             ref.current.complete();
@@ -137,7 +138,8 @@ const Home = () => {
                             {/* ------------ Logout Modal End ---------  */}
 
                             {/* ------------ Create Post Modal Start ---------  */}
-                            <Modal show={newPostModalShow} onHide={newPostFormClose} backdrop="static" keyboard={false}
+                            {/* <Modal show={newPostModalShow} onHide={newPostFormClose}
+                                backdrop="static" keyboard={false}
                             >
                                 <Modal.Header closeButton>
                                     <Modal.Title>New Blog Post</Modal.Title>
@@ -168,13 +170,18 @@ const Home = () => {
                                         </Button>
                                     </div>
                                 </Modal.Body>
-                            </Modal>
+                            </Modal> */}
+                            <NewPost show={newPostModalShow} onHide={newPostFormClose}
+                                validated={validated} onChangePostTitle={onChangePostTitle}
+                                onChangePostContent={onChangePostContent}
+                                loading={loading} createNewPostData={createNewPostData}
+                                postTitle={postTitle} postContent={postContent} />
                             {/* ------------ Create Post Modal End ---------  */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Posts getAllPostsData = {getAllPosts}/>
+            <Posts getAllPostsData={getAllPosts} getAllPostsDataMethod={getAllPostsDataMethod} />
         </>
     );
 };

@@ -1,42 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Post.css";
-import { Row, Col, Modal, Form, Spinner } from "react-bootstrap";
+import { Row, Col, Form, Spinner } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import { createNewComment } from "../redux/actions/newCommentAction";
 import { getComments } from "../redux/actions/getComments";
 import { auth } from "../firebase";
 import { useDispatch } from "react-redux";
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditComment from "./EditComment";
 import { deleteComments } from "../redux/actions/deleteComments";
-import Box from '@mui/material/Box';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from "@mui/material/Stack";
 import { CircularProgress } from "@mui/material";
-
-const options = ["Edit", "Delete"];
-const Header = (props) => {
-    return (
-        <Box sx={{
-            // position: 'fixed',
-            // left: 0,
-            // right: 0,
-            // backgroundColor: '#fff',
-            // boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-            zIndex: 1
-        }}>
-            <h3 style={{
-                textAlign: 'center',
-                marginLeft: "0.5em"
-            }}>{props.title} - Comments</h3>
-
-        </Box>
-    );
-};
-// const ITEM_HEIGHT = 48;
+import MenuList from "./Menu";
 
 const Comments = (props) => {
     const [commentContent, setCommentContent] = useState("");
@@ -49,12 +24,15 @@ const Comments = (props) => {
     const [updated, setUpdated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
+    const [userId, setUserId] = useState(null);
     const testRef = useRef(null);
 
     useEffect(() => {
         getAllCommentsDataMethod();
         setUpdated(false);
+        auth.currentUser.reload().then(() => {
+            setUserId(auth.currentUser.uid);
+        });
         return () => {
             setGetAllComments([]);
         }
@@ -62,6 +40,7 @@ const Comments = (props) => {
 
     const handleClick = (event, comment) => {
         event.preventDefault();
+        console.log(event.currentTarget);
         setAnchorEl(event.currentTarget);
         setPerticularComment(comment.commentDescription);
         setId(comment.id);
@@ -72,10 +51,9 @@ const Comments = (props) => {
         getAllCommentsDataMethod();
     };
 
-    const handleClose = (item) => {
-        // item.preventDefault();
+    const closeMenu = async (item) => {
         setAnchorEl(null);
-        if (item == "Edit") {
+        if (item === "Edit") {
             setEditComment(true);
         } else if (item === "Delete") {
             dispatch(deleteComments(id)).then((res) => {
@@ -129,52 +107,23 @@ const Comments = (props) => {
 
     return (
         <>
-            {/* <Header title={props.title} /> */}
             <div style={{ marginTop: "1em", marginBottom: "1em" }}>
                 {getAllComments && getAllComments.length > 0 ?
                     <Stack direction="column" sx={{ height: "200px", overflowY: "scroll" }} ref={testRef}>
-                        {getAllComments.map((comment, index) => (
+                        {getAllComments.map((comment) => (
                             <div key={comment.id} style={{ marginLeft: "1em" }}>
-
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }} key={comment.id}>
-                                    <p style={{ fontSize: 12, marginBottom: "-1rem" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                                    <p style={{ fontSize: 12, marginBottom: (userId != comment.userUID) ? "0.7rem" : "-1rem", }}>
                                         <b style={{ fontSize: 15 }}>{comment.userName + " "}</b>  {" " + new Date(comment.createdDate).toLocaleString('en-US', {
                                             dateStyle: 'long',
                                             timeStyle: 'short'
                                         })}
                                     </p>
-                                    <div key={comment.id}>
-                                        <IconButton
-                                            aria-label="more"
-                                            id="long-button"
-                                            aria-controls={open ? 'long-menu' : undefined}
-                                            aria-expanded={open ? 'true' : undefined}
-                                            aria-haspopup="true"
-                                            onClick={(e) => handleClick(e, comment)}
-                                            style={{
-                                                // zIndex: -1
-                                            }}
-                                        >
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                        <Menu
-                                            id="long-menu"
-                                            MenuListProps={{
-                                                'aria-labelledby': 'long-button',
-                                            }}
-                                            anchorEl={anchorEl}
-                                            open={open}
-                                            onClose={() => setAnchorEl(null)}
-                                            key={comment.id}
-                                        >
-                                            {options.map((option) => (
-                                                <MenuItem key={option}
-                                                    onClick={() => handleClose(option)}>
-                                                    {option}
-                                                </MenuItem>
-                                            ))}
-                                        </Menu>
-                                    </div>
+                                    {(userId == comment.userUID) ?
+                                        <MenuList anchorEl={anchorEl} setAnchorEl={setAnchorEl}
+                                            handleClick={handleClick} comment={comment}
+                                            closeMenu={closeMenu} />
+                                        : ""}
                                 </div>
                                 <span style={{ fontSize: 14 }}>{comment.commentDescription}</span>
                                 <hr className="hr-opacity" />
@@ -228,7 +177,7 @@ const Comments = (props) => {
                     {editComment &&
                         <EditComment
                             perticularComment={perticularComment} id={id} setPerticularComment={setPerticularComment}
-                            drawerClose = {drawerClose}
+                            drawerClose={drawerClose}
                         />
                     }
                 </div>

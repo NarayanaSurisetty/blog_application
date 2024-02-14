@@ -7,10 +7,10 @@ const Posts = (props) => {
         <div className="posts-container mt-3 mb-3">
             {props.getAllPostsData && props.getAllPostsData.length > 0 ? props.getAllPostsData.map((post) => (
                 <div key={post.id}>
-                    <Post post={post} />
+                    <Post post={post} getAllPostsDataMethod={props.getAllPostsDataMethod}/>
                     <br />
                 </div>
-            )) : <p style={{textAlign: "center"}}>No Posts available..</p>}
+            )) : <p style={{ textAlign: "center" }}>No Posts available..</p>}
         </div>
     );
 };
